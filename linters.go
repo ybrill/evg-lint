@@ -118,3 +118,21 @@ func (f *file) lintCancelled() {
 		return true
 	})
 }
+
+func (f *file) lintForLoopDefer() {
+	f.walk(func(node ast.Node) bool {
+		switch v := node.(type) {
+		case *ast.ForStmt:
+			for _, stmt := range v.Body.List {
+				tryDefer, ok := stmt.(*ast.DeferStmt)
+				if !ok {
+					continue
+				}
+
+				f.errorf(tryDefer, 0.8, "for loop containing defer will not run until end of function")
+			}
+		}
+
+		return true
+	})
+}
