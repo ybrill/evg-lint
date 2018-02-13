@@ -191,6 +191,8 @@ type file struct {
 func (f *file) isTest() bool { return strings.HasSuffix(f.filename, "_test.go") }
 
 func (f *file) lint() {
+	f.lintTestify()
+	f.lintCancelled()
 }
 
 type link string
