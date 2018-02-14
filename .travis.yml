@@ -15,7 +15,7 @@ before_script:
 
 script:
   - go test .
-  - gometalinter --disable="gocyclo" -e"lint\.go" -e"lint_test\.go" .
+  - gometalinter --deadline=10m --disable="gocyclo" -e"lint\.go" -e"lint_test\.go" .
 
 matrix:
   allow_failures:
