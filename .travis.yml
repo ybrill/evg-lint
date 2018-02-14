@@ -7,10 +7,12 @@ go:
   - master
 
 install:
+  - go get -u github.com/alecthomas/gometalinter
   - go get -t -v ./...
 
 script:
-  - go test -v -race ./...
+  - go test .
+  - gometalinter --disable="gocyclo" -e"lint\.go" -e"lint_test\.go" .
 
 matrix:
   allow_failures:
