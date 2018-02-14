@@ -1,6 +1,8 @@
 evg-lint is a linter for common problems encountered in the 
 [Evergreen](https://github.com/evergreen-ci/evergreen) codebase 
 
+[![Build Status](https://travis-ci.org/richardsamuels/evg-lint.svg?branch=master)](https://travis-ci.org/richardsamuels/evg-lint)
+
 ## Installation
 
 Golint requires Go 1.6 or later.
@@ -22,6 +24,11 @@ respectively in testify suites. Requires that the receiver struct have
 To aid in grep use, we prefer the AmE spelling "canceled" as opposed to the BrE
 spelling "cancelled". This alerts to the use of the BrE spelling. By default,
 these errors are not reported. (0.7 confidence; min is 0.8)
+
+### Defer in for loops
+Using defer in a for loop has the often unintended consequence of delaying
+the defer method until function close, while we mentally expect the defer to
+run at the end of every loop body. 
 
 ## License
 This package derives heavily from [golint](https://github.com/golang/lint),
