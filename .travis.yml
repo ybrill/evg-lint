@@ -10,6 +10,9 @@ install:
   - go get -u github.com/alecthomas/gometalinter
   - go get -t -v ./...
 
+before_script:
+  - gometalinter --force --install
+
 script:
   - go test .
   - gometalinter --disable="gocyclo" -e"lint\.go" -e"lint_test\.go" .
