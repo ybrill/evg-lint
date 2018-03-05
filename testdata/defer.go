@@ -1,6 +1,10 @@
 package testdata
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"io/ioutil"
+)
 
 func tryDefer() {
 	for i := 0; i < 10; i += 1 {
@@ -11,6 +15,18 @@ func tryDefer() {
 
 		notADeferStmt := "test"
 		fmt.Println(notADeferStmt)
+	}
+}
+
+func tryDefer2() {
+	data := []int{0, 1, 2, 3, 4, 5}
+	for _ := range data {
+		tempFile, err := ioutil.TempFile("", "mcipatch_")
+		if err != nil {
+			return err
+		}
+		defer tempFile.Close() // MATCH /for loop containing defer will not run until end of functio/
+		_, err = io.WriteString(tempFile, "hi")
 	}
 }
 
