@@ -16,7 +16,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/richardsamuels/evg-lint"
+	"github.com/evergreen-ci/evg-lint"
 )
 
 var (

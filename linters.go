@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	testifyFunctionsWeMispell = []string{"TeardownSuite", "TeardownTest",
+	testifyFunctionsWeMisspell = []string{"TeardownSuite", "TeardownTest",
 		"SetUpSuite", "SetUpTest"}
 	testifyFunctionsCorrected = []string{"TearDownSuite", "TearDownTest",
 		"SetupSuite", "SetupTest"}
@@ -72,6 +72,10 @@ func (f *file) lintTestify() {
 				return true
 			}
 
+			if f.isIgnored(v) {
+				return true
+			}
+
 			// relax testify detection when linting a single file,
 			// in case the struct decl is in a different file
 			if len(files) > 1 {
@@ -93,7 +97,7 @@ func (f *file) lintTestify() {
 				}
 			}
 
-			for i, s := range testifyFunctionsWeMispell {
+			for i, s := range testifyFunctionsWeMisspell {
 				if v.Name.Name == s {
 					f.errorf(node, 0.8, "Testify method was spelled '%s', did you mean '%s'?", v.Name.Name, testifyFunctionsCorrected[i])
 				}
@@ -111,6 +115,9 @@ func (f *file) lintCancelled() {
 			if v.Name == nil {
 				return true
 			}
+			if f.isIgnored(node) {
+				return true
+			}
 			if strings.Contains(strings.ToLower(v.Name.Name), "cancelled") {
 				f.errorf(node, 0.7, "prefer the AmE spelling of \"canceled\" in function names (remove an l)")
 			}
@@ -124,6 +131,9 @@ func (f *file) lintForLoopDefer() {
 		switch v := node.(type) {
 		case *ast.ForStmt:
 			for _, stmt := range v.Body.List {
+				if f.isIgnored(stmt) {
+					return true
+				}
 				tryDefer, ok := stmt.(*ast.DeferStmt)
 				if !ok {
 					continue
@@ -133,6 +143,10 @@ func (f *file) lintForLoopDefer() {
 			}
 		case *ast.RangeStmt:
 			for _, stmt := range v.Body.List {
+				if f.isIgnored(stmt) {
+					return true
+				}
+
 				tryDefer, ok := stmt.(*ast.DeferStmt)
 				if !ok {
 					continue

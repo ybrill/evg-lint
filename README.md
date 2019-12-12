@@ -1,13 +1,11 @@
 evg-lint is a linter for common problems encountered in the 
 [Evergreen](https://github.com/evergreen-ci/evergreen) codebase 
 
-[![Build Status](https://travis-ci.org/richardsamuels/evg-lint.svg?branch=master)](https://travis-ci.org/richardsamuels/evg-lint)
-
 ## Installation
 
 Golint requires Go 1.6 or later.
 
-    go get -u github.com/richardsamuels/evg-lint/evg-lint
+    go get -u github.com/evergreen-ci/evg-lint/evg-lint
 
 ## Usage
 
