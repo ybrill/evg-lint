@@ -25,7 +25,10 @@ import (
 	"golang.org/x/tools/go/gcexportdata"
 )
 
-const styleGuideBase = "https://golang.org/wiki/CodeReviewComments"
+const (
+	styleGuideBase = "https://golang.org/wiki/CodeReviewComments"
+	allLinters     = "all"
+)
 
 // A Linter lints Go source code.
 type Linter struct {
@@ -793,21 +796,23 @@ func findIgnored(f *ast.File, fset *token.FileSet, comments ...*ast.CommentGroup
 		for _, c := range g.List {
 			text := strings.TrimLeft(c.Text, "/ ")
 			var linters []string
-			if strings.HasPrefix(text, "nolint") {
-				if strings.HasPrefix(text, "nolint:") {
-					for _, linter := range strings.Split(text[7:], ",") {
-						linters = append(linters, strings.TrimSpace(linter))
+			if strings.HasPrefix(text, "nolint:") {
+				for _, linter := range strings.Split(text[7:], ",") {
+					if linter == allLinters {
+						linters = nil
+						break
 					}
+					linters = append(linters, strings.TrimSpace(linter))
 				}
-				pos := fset.Position(g.Pos())
-				rng := &ignoredRange{
-					col:     pos.Column,
-					start:   pos.Line,
-					end:     fset.Position(g.End()).Line,
-					linters: linters,
-				}
-				ranges = append(ranges, rng)
 			}
+			pos := fset.Position(g.Pos())
+			rng := &ignoredRange{
+				col:     pos.Column,
+				start:   pos.Line,
+				end:     fset.Position(g.End()).Line,
+				linters: linters,
+			}
+			ranges = append(ranges, rng)
 		}
 	}
 	ast.Walk(&rangeExpander{fset: fset, ranges: ranges}, f)
